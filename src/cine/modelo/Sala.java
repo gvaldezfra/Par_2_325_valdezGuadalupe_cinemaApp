@@ -7,7 +7,7 @@ public class Sala implements Serializable {
     private int numero;
     private String pelicula;
     private Butaca[][] butacas;
-    private String portada; // ← NUEVO
+    private String portada; 
 
     public Sala(int numero, String pelicula, int filas, int columnas, String portada) {
         this.numero = numero;

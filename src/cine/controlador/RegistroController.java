@@ -22,7 +22,6 @@ public class RegistroController {
         String email = txtEmail.getText().trim().toLowerCase();
         String pass = txtPass.getText();
 
-        // Validación básica
         if (nombre.isEmpty() || email.isEmpty() || pass.isEmpty()) {
             alert(Alert.AlertType.WARNING, 
                   "Datos incompletos", 
@@ -30,7 +29,6 @@ public class RegistroController {
             return;
         }
 
-        // Validación de email
         if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             alert(Alert.AlertType.WARNING, 
                   "Email inválido", 
@@ -38,7 +36,6 @@ public class RegistroController {
             return;
         }
 
-        // Validación de contraseña (opcional)
         if (pass.length() < 4) {
             alert(Alert.AlertType.WARNING, 
                   "Contraseña débil",
@@ -46,7 +43,6 @@ public class RegistroController {
             return;
         }
 
-        // Verificar email duplicado
         for (Cliente c : cine.getClientes()) {
             if (c.getEmail().equalsIgnoreCase(email)) {
                 alert(Alert.AlertType.WARNING, 
@@ -56,18 +52,15 @@ public class RegistroController {
             }
         }
 
-        // Crear cliente
         Cliente nuevo = new Cliente(nombre, email, pass);
         cine.getClientes().add(nuevo);
 
-        // Persistir datos
         PersistenciaDatos.guardar(cine);
 
         alert(Alert.AlertType.INFORMATION, 
               "Registro exitoso", 
               "Usuario registrado correctamente.\nIniciando sesión...");
 
-        // Iniciar sesión automáticamente
         App.setClienteActual(nuevo);
         App.cambiarVentana("vista/fxml/PeliculasView.fxml");
     }

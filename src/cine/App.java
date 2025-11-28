@@ -78,7 +78,6 @@ public class App extends Application {
         }
     }
 
-    // ==== GETTERS / SETTERS ====
     public static void setClienteActual(Cliente c) {
         clienteActual = c;
     }

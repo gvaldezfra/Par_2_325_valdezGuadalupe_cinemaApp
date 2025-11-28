@@ -3,7 +3,7 @@ import java.io.Serializable;
 
 public class Butaca implements Serializable {
     private int fila;
-    private int numero;     // esta es la columna realmente
+    private int numero;  
     private boolean ocupada;
 
     public Butaca(int fila, int numero) {
@@ -20,7 +20,6 @@ public class Butaca implements Serializable {
         return numero; 
     }
 
-    // Alias para compatibilidad con código que usa "columna"
     public int getColumna() { 
         return numero; 
     }
