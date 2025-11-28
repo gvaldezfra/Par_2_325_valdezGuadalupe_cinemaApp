@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="cine.controlador.RegistroController"
+      alignment="CENTER" spacing="12" prefWidth="300">
+
+    <Label text="Crear Cuenta" style="-fx-font-size: 18px;"/>
+
+    <TextField fx:id="txtNombre" promptText="Nombre"/>
+    <TextField fx:id="txtEmail" promptText="Email"/>
+    <PasswordField fx:id="txtPass" promptText="Contraseña"/>
+
+    <Button text="Registrarse" onAction="#registrar"/>
+
+    <Hyperlink text="Ya tengo cuenta" onAction="#irALogin"/>
+
+</VBox>
+

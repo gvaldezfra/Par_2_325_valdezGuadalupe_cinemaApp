@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="cine.controlador.TicketController"
+      alignment="CENTER"
+      spacing="10"
+      prefWidth="400" prefHeight="300">
+
+    <Label fx:id="lblCliente"/>
+    <Label fx:id="lblPelicula"/>
+    <Label fx:id="lblSala"/>
+
+    <ListView fx:id="listaButacas" prefHeight="150"/>
+    
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Volver a cartelera" onAction="#volver"/>
+        <Button text="Exportar PDF" onAction="#exportarPDF"/>
+        <Button text="Cerrar" onAction="#cerrar"/>
+    </HBox>
+
+</VBox>
+
