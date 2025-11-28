@@ -1,24 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="cine.controlador.LoginController"
-      alignment="CENTER" spacing="12" prefWidth="300">
+      alignment="CENTER"
+      spacing="12"
+      prefWidth="300"
+      style="-fx-padding: 20;">
 
     <Label text="Iniciar Sesión" style="-fx-font-size: 18px;"/>
 
-    <TextField fx:id="txtEmail" promptText="Email"/>
-    <PasswordField fx:id="txtPass" promptText="Contraseña"/>
+    <TextField fx:id="txtEmail"
+               promptText="Email"
+               maxWidth="250"/>
 
-    <Button text="Entrar" onAction="#login"/>
+    <PasswordField fx:id="txtPass"
+                   promptText="Contraseña"
+                   maxWidth="250"/>
 
-    <Hyperlink text="Crear cuenta" onAction="#irARegistro"/>
+    <Button text="Entrar"
+            onAction="#login"
+            maxWidth="150"/>
+
+    <Hyperlink text="Crear cuenta"
+               onAction="#irARegistro"/>
 
 </VBox>
-

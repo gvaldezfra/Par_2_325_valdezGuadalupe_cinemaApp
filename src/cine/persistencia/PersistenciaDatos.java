@@ -10,7 +10,9 @@ public class PersistenciaDatos {
     public static void guardar(Cine cine) {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(ARCHIVO))) {
             out.writeObject(cine);
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static Cine cargar() {

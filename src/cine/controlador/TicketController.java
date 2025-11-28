@@ -1,17 +1,15 @@
 package cine.controlador;
 
 import cine.App;
+import cine.modelo.Compra;
 import cine.modelo.Entrada;
-import com.lowagie.text.Document;
-import com.lowagie.text.Paragraph;
+import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TicketController {
 
@@ -20,61 +18,56 @@ public class TicketController {
     @FXML private Label lblSala;
     @FXML private ListView<String> listaButacas;
 
-    private List<Entrada> entradas = new ArrayList<>();
+    private Compra compra;
 
     @FXML
     public void initialize() {
 
-        // 1) Primero intentamos ver si viene un ticket múltiple (comprado recién)
-        if (App.getEntradasActuales() != null && !App.getEntradasActuales().isEmpty()) {
-            entradas = App.getEntradasActuales();
-        }
-        // 2) Sino, vemos si hay un ticket individual (compra pasada)
-        else if (App.getEntradaActual() != null) {
-            entradas.add(App.getEntradaActual());
-        }
-        // 3) Sino, no hay nada para mostrar
-        else {
-            return;
-        }
+        // === OBTENER COMPRA ACTUAL ===
+        compra = App.getCompraActual();
+        App.setCompraActual(null); // limpiar después de usar
 
-        Entrada primera = entradas.get(0);
+        if (compra == null) return;
 
-        lblCliente.setText("Cliente: " + primera.getCliente().getEmail());
-        lblPelicula.setText("Película: " + primera.getSala().getPelicula());
-        lblSala.setText("Sala: " + primera.getSala().getNumero());
+        lblCliente.setText("Cliente: " + compra.getCliente().getEmail());
+        lblPelicula.setText("Película: " + compra.getSala().getPelicula());
+        lblSala.setText("Sala: " + compra.getSala().getNumero());
 
-        for (Entrada e : entradas) {
-            String linea = "Fila " + e.getButaca().getFila() +
-                            " - Asiento " + e.getButaca().getNumero();
-            listaButacas.getItems().add(linea);
+        // === CARGAR BUTACAS ===
+        for (Entrada e : compra.getEntradas()) {
+
+            int fila = e.getButaca().getFila() + 1; // empieza en 1
+            char asiento = (char) ('A' + e.getButaca().getNumero());
+
+            listaButacas.getItems().add("Fila " + fila + " — Asiento " + asiento);
         }
     }
 
     @FXML
     private void exportarPDF() {
+        if (compra == null) return;
+
         try {
-            Document doc = new Document();
+            Document doc = new Document(PageSize.A6);
             PdfWriter.getInstance(doc, new FileOutputStream("ticket.pdf"));
             doc.open();
 
-            Entrada primera = entradas.get(0);
-
-            doc.add(new Paragraph("===== TICKET DE CINE =====\n\n"));
-            doc.add(new Paragraph("Cliente: " + primera.getCliente().getEmail()));
-            doc.add(new Paragraph("Película: " + primera.getSala().getPelicula()));
-            doc.add(new Paragraph("Sala: " + primera.getSala().getNumero()));
+            doc.add(new Paragraph("====== TICKET DE CINE ======\n\n"));
+            doc.add(new Paragraph("Cliente: " + compra.getCliente().getEmail()));
+            doc.add(new Paragraph("Película: " + compra.getSala().getPelicula()));
+            doc.add(new Paragraph("Sala: " + compra.getSala().getNumero()));
             doc.add(new Paragraph("\nButacas:\n"));
 
-            for (Entrada e : entradas) {
-                doc.add(new Paragraph("- Fila " + e.getButaca().getFila() +
-                                      " | Asiento " + e.getButaca().getNumero()));
+            for (Entrada e : compra.getEntradas()) {
+                int fila = e.getButaca().getFila() + 1;
+                char asiento = (char) ('A' + e.getButaca().getNumero());
+                doc.add(new Paragraph("• Fila " + fila + " — Asiento " + asiento));
             }
 
-            doc.add(new Paragraph("\n¡Gracias por su compra!"));
+            doc.add(new Paragraph("\nGracias por su compra!"));
             doc.close();
 
-            System.out.println("PDF generado: ticket.pdf");
+            System.out.println("PDF generado correctamente");
 
         } catch (Exception e) {
             e.printStackTrace();

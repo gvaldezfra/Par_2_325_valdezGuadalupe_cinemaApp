@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import cine.modelo.Cliente;
+import cine.modelo.Compra;
 import cine.modelo.Sala;
 import cine.modelo.Entrada;
 import cine.persistencia.PersistenciaDatos;
@@ -20,13 +21,13 @@ public class App extends Application {
     private static Scene scene;
     public static Stage stage;
 
-    // 🟢 Cine GLOBAL (compartido por toda la app)
     public static Cine cine = PersistenciaDatos.cargar();
 
     private static Cliente clienteActual;
     private static Sala salaActual;
     private static Entrada entradaActual;
     private static List<Entrada> entradasActuales = new ArrayList<>();
+    private static Compra compraActual;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -37,9 +38,11 @@ public class App extends Application {
 
         Parent root = loadFXML("vista/fxml/LoginView.fxml");
 
-        scene = new Scene(root, 400, 300);
+        scene = new Scene(root, 900, 600);
         stage.setScene(scene);
+
         stage.setTitle("Cine");
+        stage.setResizable(false);
         stage.show();
     }
 
@@ -72,7 +75,7 @@ public class App extends Application {
             fadeOut.play();
 
         } catch (Exception e) {
-            System.out.println("? ERROR cargando FXML: " + fxml);
+            System.out.println("❌ ERROR cargando FXML: " + fxml);
             e.printStackTrace();
         }
     }
@@ -88,47 +91,76 @@ public class App extends Application {
     }
 
     // ==== GETTERS / SETTERS ====
-    public static void setClienteActual(Cliente c) { clienteActual = c; }
-    public static Cliente getClienteActual() { return clienteActual; }
+    public static void setClienteActual(Cliente c) {
+        clienteActual = c;
+    }
 
-    public static void setSalaActual(Sala s) { salaActual = s; }
-    public static Sala getSalaActual() { return salaActual; }
+    public static Cliente getClienteActual() {
+        return clienteActual;
+    }
 
-    public static void setEntradaActual(Entrada e) { entradaActual = e; }
-    public static Entrada getEntradaActual() { return entradaActual; }
+    public static void setSalaActual(Sala s) {
+        salaActual = s;
+    }
 
-    public static void setEntradasActuales(List<Entrada> lista) { entradasActuales = lista; }
-    public static List<Entrada> getEntradasActuales() { return entradasActuales; }
+    public static Sala getSalaActual() {
+        return salaActual;
+    }
 
-    public static void main(String[] args) { launch(); }
+    public static void setEntradaActual(Entrada e) {
+        entradaActual = e;
+    }
+
+    public static Entrada getEntradaActual() {
+        return entradaActual;
+    }
+
+    public static void setEntradasActuales(List<Entrada> lista) {
+        entradasActuales = lista;
+    }
+
+    public static List<Entrada> getEntradasActuales() {
+        return entradasActuales;
+    }
+
+    public static void setCompraActual(Compra c) {
+        compraActual = c;
+    }
+
+    public static Compra getCompraActual() {
+        return compraActual;
+    }
+
+    public static void main(String[] args) {
+        launch();
+    }
 
     private void inicializarDatos() {
-    Cine cine = PersistenciaDatos.cargar();
 
-    if (cine.getSalas().isEmpty()) {
+        // Usamos SIEMPRE el cine global
+        if (cine.getSalas().isEmpty()) {
 
-        cine.getSalas().add(new Sala(
-                1, "Avengers: Endgame", 5, 8,
-                "avengers_end_game.jpg"
-        ));
+            cine.getSalas().add(new Sala(
+                    1, "Avengers: Endgame", 5, 8,
+                    "avengers_end_game.jpg"
+            ));
 
-        cine.getSalas().add(new Sala(
-                2, "Avatar 2", 5, 8,
-                "avatar_2_el_camino_del_agua.jpeg"
-        ));
+            cine.getSalas().add(new Sala(
+                    2, "Avatar 2", 5, 8,
+                    "avatar_2_el_camino_del_agua.jpeg"
+            ));
 
-        cine.getSalas().add(new Sala(
-                3, "Mario Bros", 5, 8,
-                "mario.jpg"
-        ));
+            cine.getSalas().add(new Sala(
+                    3, "Mario Bros", 5, 8,
+                    "mario.jpg"
+            ));
 
-        cine.getSalas().add(new Sala(
-                4, "Spider-Man: No Way Home", 5, 8,
-                "spiderman.jpg"
-        ));
+            cine.getSalas().add(new Sala(
+                    4, "Spider-Man: No Way Home", 5, 8,
+                    "spiderman.jpg"
+            ));
 
-        PersistenciaDatos.guardar(cine);
+            PersistenciaDatos.guardar(cine);
+        }
     }
-}
-
 }

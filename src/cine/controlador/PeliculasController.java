@@ -8,45 +8,47 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
+import java.util.*;
+
 public class PeliculasController {
 
     @FXML
     private ListView<HBox> listaPeliculas;
+
     @FXML
     private ListView<String> listaCompras;
 
     @FXML
     private ImageView imgPelicula;
+
     @FXML
     private Button btnComprar;
 
     private Cine cine = App.cine;
     private Sala salaSeleccionada = null;
 
+    private Map<Compra, String> mapaCompras = new HashMap<>();
+
     @FXML
     public void initialize() {
         cargarPeliculas();
-        cargarComprasUsuario();
+        cargarComprasAgrupadas();
         configurarDobleClickCompras();
 
         btnComprar.setDisable(true);
     }
 
-    // ====================================================
-    //                 CARGAR PELÍCULAS
-    // ====================================================
     private void cargarPeliculas() {
 
         for (Sala s : cine.getSalas()) {
 
-            // Miniatura
             ImageView img = new ImageView();
             try {
-                Image imagenMiniatura = new Image(
+                Image mini = new Image(
                         getClass().getResourceAsStream("/cine/resources/" + s.getPortada())
                 );
-                img.setImage(imagenMiniatura);
-            } catch (NullPointerException e) {
+                img.setImage(mini);
+            } catch (Exception e) {
                 System.err.println("No se pudo cargar la imagen: " + s.getPortada());
             }
 
@@ -58,21 +60,19 @@ public class PeliculasController {
             HBox item = new HBox(10, img, lbl);
             item.setStyle("-fx-padding: 5;");
 
-            // Click simple → muestra portada y habilita "Comprar"
             item.setOnMouseClicked(e -> {
                 salaSeleccionada = s;
                 App.setSalaActual(s);
 
                 try {
-                    Image imagenGrande = new Image(
+                    Image grande = new Image(
                             getClass().getResourceAsStream("/cine/resources/" + s.getPortada())
                     );
-                    imgPelicula.setImage(imagenGrande);
-                } catch (NullPointerException ex) {
+                    imgPelicula.setImage(grande);
+                } catch (Exception ex) {
                     System.err.println("No se pudo cargar la imagen: " + s.getPortada());
                 }
 
-                btnComprar.setDisable(true);
                 btnComprar.setDisable(false);
             });
 
@@ -90,26 +90,28 @@ public class PeliculasController {
         App.cambiarVentana("vista/fxml/ButacasView.fxml");
     }
 
-    // ====================================================
-    //               COMPRAS ANTERIORES
-    // ====================================================
-    private void cargarComprasUsuario() {
+    private void cargarComprasAgrupadas() {
 
         Cliente cliente = App.getClienteActual();
         if (cliente == null) {
             return;
         }
 
-        for (Entrada e : cine.getEntradas()) {
-            if (e.getCliente().equals(cliente)) {
+        listaCompras.getItems().clear();
+        mapaCompras.clear();
 
-                String txt = "🎬 " + e.getSala().getPelicula()
-                        + " | Sala " + e.getSala().getNumero()
-                        + " | F" + e.getButaca().getFila()
-                        + " A" + e.getButaca().getNumero();
+        for (Compra compra : cine.getCompras()) {
 
-                listaCompras.getItems().add(txt);
+            if (!compra.getCliente().equals(cliente)) {
+                continue;
             }
+
+            String titulo
+                    = compra.getSala().getPelicula() + " — "
+                    + compra.getEntradas().size() + " butaca(s)";
+
+            listaCompras.getItems().add(titulo);
+            mapaCompras.put(compra, titulo);
         }
     }
 
@@ -119,33 +121,34 @@ public class PeliculasController {
 
             if (evt.getClickCount() == 2) {
 
-                int index = listaCompras.getSelectionModel().getSelectedIndex();
-                if (index < 0) {
+                String seleccion = listaCompras.getSelectionModel().getSelectedItem();
+                if (seleccion == null) {
                     return;
                 }
 
-                Cliente cliente = App.getClienteActual();
-                int i = 0;
+                // Encontrar la compra asociada
+                Compra compraElegida = null;
 
-                for (Entrada e : cine.getEntradas()) {
-
-                    if (e.getCliente().equals(cliente)) {
-
-                        if (i == index) {
-                            App.setEntradaActual(e);
-                            App.cambiarVentana("vista/fxml/TicketView.fxml");
-                            return;
-                        }
-                        i++;
+                for (Map.Entry<Compra, String> entry : mapaCompras.entrySet()) {
+                    if (entry.getValue().equals(seleccion)) {
+                        compraElegida = entry.getKey();
+                        break;
                     }
                 }
+
+                if (compraElegida == null) {
+                    return;
+                }
+
+                // ENVIAR LA COMPRA COMPLETA AL TICKET
+                App.setCompraActual(compraElegida);
+
+                // ABRIR TICKET
+                App.cambiarVentana("vista/fxml/TicketView.fxml");
             }
         });
     }
 
-    // ====================================================
-    //                 CERRAR SESIÓN
-    // ====================================================
     @FXML
     private void cerrarSesion() {
 
