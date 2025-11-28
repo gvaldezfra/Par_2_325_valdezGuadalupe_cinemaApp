@@ -33,22 +33,23 @@ public class App extends Application {
     public void start(Stage stage) throws Exception {
 
         App.stage = stage;
-
         inicializarDatos();
 
-        Parent root = loadFXML("vista/fxml/LoginView.fxml");
-
+        Parent root = cargarFXML("vista/fxml/LoginView.fxml");
         scene = new Scene(root, 900, 600);
-        stage.setScene(scene);
 
+        stage.setScene(scene);
         stage.setTitle("Cine");
         stage.setResizable(false);
+
+        stage.setOnCloseRequest(e -> PersistenciaDatos.guardar(cine));
+
         stage.show();
     }
 
     public static void cambiarVentana(String fxml) {
         try {
-            FXMLLoader loader = new FXMLLoader(App.class.getResource(fxml));
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("/cine/" + fxml));
             Parent nuevoRoot = loader.load();
 
             Scene sceneActual = stage.getScene();
@@ -75,16 +76,14 @@ public class App extends Application {
             fadeOut.play();
 
         } catch (Exception e) {
-            System.out.println("❌ ERROR cargando FXML: " + fxml);
             e.printStackTrace();
         }
     }
 
-    private static Parent loadFXML(String ruta) {
+    private static Parent cargarFXML(String ruta) {
         try {
             return new FXMLLoader(App.class.getResource("/cine/" + ruta)).load();
         } catch (Exception e) {
-            System.out.println("\n❌ ERROR cargando FXML: " + ruta);
             e.printStackTrace();
             return null;
         }
@@ -137,27 +136,43 @@ public class App extends Application {
 
     private void inicializarDatos() {
 
-        // Usamos SIEMPRE el cine global
         if (cine.getSalas().isEmpty()) {
 
             cine.getSalas().add(new Sala(
                     1, "Avengers: Endgame", 5, 8,
                     "avengers_end_game.jpg"
             ));
-
             cine.getSalas().add(new Sala(
                     2, "Avatar 2", 5, 8,
                     "avatar_2_el_camino_del_agua.jpeg"
             ));
-
             cine.getSalas().add(new Sala(
                     3, "Mario Bros", 5, 8,
                     "mario.jpg"
             ));
-
             cine.getSalas().add(new Sala(
                     4, "Spider-Man: No Way Home", 5, 8,
                     "spiderman.jpg"
+            ));
+            cine.getSalas().add(new Sala(
+                    5, "Oppenheimer", 6, 10,
+                    "oppenheimer.jpg"
+            ));
+            cine.getSalas().add(new Sala(
+                    6, "Barbie", 6, 10,
+                    "barbie.jpg"
+            ));
+            cine.getSalas().add(new Sala(
+                    10, "Interestelar", 5, 8,
+                    "interestelar.jpg"
+            ));
+            cine.getSalas().add(new Sala(
+                    11, "El Señor de los Anillos", 6, 10,
+                    "lotr.jpg"
+            ));
+            cine.getSalas().add(new Sala(
+                    15, "Wonka", 5, 8,
+                    "wonka.jpg"
             ));
 
             PersistenciaDatos.guardar(cine);

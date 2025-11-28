@@ -5,21 +5,47 @@ import java.io.*;
 
 public class PersistenciaDatos {
 
-    private static final String ARCHIVO = "cine.ser";
+    private static final String CARPETA = "data";
+    private static final String ARCHIVO = CARPETA + File.separator + "cine.ser";
+
+    static {
+        File f = new File(CARPETA);
+        if (!f.exists()) f.mkdirs();
+    }
 
     public static void guardar(Cine cine) {
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(ARCHIVO))) {
+        File archivoReal = new File(ARCHIVO);
+        File archivoTemp = new File(ARCHIVO + ".tmp");
+
+        try (ObjectOutputStream out =
+                     new ObjectOutputStream(new FileOutputStream(archivoTemp))) {
+
             out.writeObject(cine);
-        } catch (Exception e) {
+            out.flush();
+
+            if (archivoReal.exists()) archivoReal.delete();
+            archivoTemp.renameTo(archivoReal);
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static Cine cargar() {
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(ARCHIVO))) {
+        File archivo = new File(ARCHIVO);
+
+        if (!archivo.exists()) {
+            return new Cine();
+        }
+
+        try (ObjectInputStream in =
+                     new ObjectInputStream(new FileInputStream(archivo))) {
+
             return (Cine) in.readObject();
+
         } catch (Exception e) {
-            return new Cine(); // si no existe, crear nuevo
+            e.printStackTrace();
+            return new Cine();
         }
     }
 }

@@ -19,34 +19,55 @@ public class RegistroController {
     private void registrar() {
 
         String nombre = txtNombre.getText().trim();
-        String email = txtEmail.getText().trim();
-        String pass = txtPass.getText().trim();
+        String email = txtEmail.getText().trim().toLowerCase();
+        String pass = txtPass.getText();
 
+        // Validación básica
         if (nombre.isEmpty() || email.isEmpty() || pass.isEmpty()) {
-            alert("Datos incompletos", "Todos los campos son obligatorios.");
+            alert(Alert.AlertType.WARNING, 
+                  "Datos incompletos", 
+                  "Todos los campos son obligatorios.");
             return;
         }
 
-        if (!email.contains("@") || !email.contains(".")) {
-            alert("Email inválido", "El email ingresado no es válido.");
+        // Validación de email
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            alert(Alert.AlertType.WARNING, 
+                  "Email inválido", 
+                  "El email ingresado no tiene un formato válido.");
             return;
         }
 
+        // Validación de contraseña (opcional)
+        if (pass.length() < 4) {
+            alert(Alert.AlertType.WARNING, 
+                  "Contraseña débil",
+                  "La contraseña debe tener al menos 4 caracteres.");
+            return;
+        }
+
+        // Verificar email duplicado
         for (Cliente c : cine.getClientes()) {
             if (c.getEmail().equalsIgnoreCase(email)) {
-                alert("Email duplicado", "Ya existe un usuario con ese email.");
+                alert(Alert.AlertType.WARNING, 
+                      "Email duplicado", 
+                      "Ya existe un usuario registrado con ese email.");
                 return;
             }
         }
 
+        // Crear cliente
         Cliente nuevo = new Cliente(nombre, email, pass);
         cine.getClientes().add(nuevo);
 
-        // Guardar en cine.ser
+        // Persistir datos
         PersistenciaDatos.guardar(cine);
 
-        alert("Registro exitoso", "Usuario registrado correctamente.\nIniciando sesión...");
+        alert(Alert.AlertType.INFORMATION, 
+              "Registro exitoso", 
+              "Usuario registrado correctamente.\nIniciando sesión...");
 
+        // Iniciar sesión automáticamente
         App.setClienteActual(nuevo);
         App.cambiarVentana("vista/fxml/PeliculasView.fxml");
     }
@@ -56,8 +77,8 @@ public class RegistroController {
         App.cambiarVentana("vista/fxml/LoginView.fxml");
     }
 
-    private void alert(String title, String msg) {
-        Alert a = new Alert(Alert.AlertType.INFORMATION);
+    private void alert(Alert.AlertType type, String title, String msg) {
+        Alert a = new Alert(type);
         a.setTitle(title);
         a.setHeaderText(null);
         a.setContentText(msg);

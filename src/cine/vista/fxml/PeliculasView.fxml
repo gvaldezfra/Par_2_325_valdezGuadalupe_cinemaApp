@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="cine.controlador.PeliculasController">
 
-    <!-- BARRA SUPERIOR -->
     <top>
-        <HBox alignment="CENTER_RIGHT">
+        <HBox spacing="10" alignment="CENTER_RIGHT">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
@@ -19,30 +18,30 @@
         </HBox>
     </top>
 
-    <!-- COLUMNA IZQUIERDA (LISTA DE PELIS) -->
     <left>
         <VBox spacing="10">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
 
-            <TitledPane text="Mis compras anteriores" expanded="false" prefWidth="250">
-                <ListView fx:id="listaCompras" prefHeight="150"/>
+            <TitledPane text="Mis compras anteriores" expanded="false" prefWidth="260">
+                <content>
+                    <ListView fx:id="listaCompras" prefHeight="150" />
+                </content>
             </TitledPane>
 
             <Label text="Películas disponibles:"/>
-            <ListView fx:id="listaPeliculas" prefWidth="250" prefHeight="400"/>
+            <ListView fx:id="listaPeliculas" prefWidth="260" prefHeight="420"/>
         </VBox>
     </left>
 
-    <!-- COLUMNA DERECHA (INFO DE PELICULA) -->
     <center>
         <VBox fx:id="panelInfo" spacing="15" alignment="CENTER">
             <padding>
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
 
-            <ImageView fx:id="imgPelicula" fitWidth="250" preserveRatio="true"/>
+            <ImageView fx:id="imgPelicula" fitWidth="300" preserveRatio="true"/>
             <Button text="Comprar entradas" fx:id="btnComprar" onAction="#comprar" disable="true"/>
         </VBox>
     </center>
