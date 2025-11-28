@@ -1,20 +1,20 @@
 package cine;
 
 import cine.modelo.Cine;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.Parent;
-import javafx.stage.Stage;
 import cine.modelo.Cliente;
-import cine.modelo.Compra;
 import cine.modelo.Sala;
 import cine.modelo.Entrada;
+import cine.modelo.Compra;
 import cine.persistencia.PersistenciaDatos;
-import java.util.ArrayList;
-import java.util.List;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import javafx.animation.FadeTransition;
 import javafx.util.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 public class App extends Application {
 
@@ -31,17 +31,17 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-
         App.stage = stage;
         inicializarDatos();
 
-        Parent root = cargarFXML("vista/fxml/LoginView.fxml");
+        Parent root = new FXMLLoader(App.class.getResource("/cine/vista/fxml/LoginView.fxml")).load();
         scene = new Scene(root, 900, 600);
 
         stage.setScene(scene);
         stage.setTitle("Cine");
         stage.setResizable(false);
 
+        // Guardar cine al cerrar
         stage.setOnCloseRequest(e -> PersistenciaDatos.guardar(cine));
 
         stage.show();
@@ -53,7 +53,6 @@ public class App extends Application {
             Parent nuevoRoot = loader.load();
 
             Scene sceneActual = stage.getScene();
-
             if (sceneActual == null) {
                 stage.setScene(new Scene(nuevoRoot));
                 stage.show();
@@ -66,7 +65,6 @@ public class App extends Application {
 
             fadeOut.setOnFinished(e -> {
                 sceneActual.setRoot(nuevoRoot);
-
                 FadeTransition fadeIn = new FadeTransition(Duration.millis(250), nuevoRoot);
                 fadeIn.setFromValue(0.0);
                 fadeIn.setToValue(1.0);
@@ -77,15 +75,6 @@ public class App extends Application {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private static Parent cargarFXML(String ruta) {
-        try {
-            return new FXMLLoader(App.class.getResource("/cine/" + ruta)).load();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
         }
     }
 
@@ -135,45 +124,16 @@ public class App extends Application {
     }
 
     private void inicializarDatos() {
-
         if (cine.getSalas().isEmpty()) {
-
-            cine.getSalas().add(new Sala(
-                    1, "Avengers: Endgame", 5, 8,
-                    "avengers_end_game.jpg"
-            ));
-            cine.getSalas().add(new Sala(
-                    2, "Avatar 2", 5, 8,
-                    "avatar_2_el_camino_del_agua.jpeg"
-            ));
-            cine.getSalas().add(new Sala(
-                    3, "Mario Bros", 5, 8,
-                    "mario.jpg"
-            ));
-            cine.getSalas().add(new Sala(
-                    4, "Spider-Man: No Way Home", 5, 8,
-                    "spiderman.jpg"
-            ));
-            cine.getSalas().add(new Sala(
-                    5, "Oppenheimer", 6, 10,
-                    "oppenheimer.jpg"
-            ));
-            cine.getSalas().add(new Sala(
-                    6, "Barbie", 6, 10,
-                    "barbie.jpg"
-            ));
-            cine.getSalas().add(new Sala(
-                    10, "Interestelar", 5, 8,
-                    "interestelar.jpg"
-            ));
-            cine.getSalas().add(new Sala(
-                    11, "El Señor de los Anillos", 6, 10,
-                    "lotr.jpg"
-            ));
-            cine.getSalas().add(new Sala(
-                    15, "Wonka", 5, 8,
-                    "wonka.jpg"
-            ));
+            cine.getSalas().add(new Sala(1, "Avengers: Endgame", 5, 8, "avengers_end_game.jpg"));
+            cine.getSalas().add(new Sala(2, "Avatar 2", 5, 8, "avatar_2_el_camino_del_agua.jpeg"));
+            cine.getSalas().add(new Sala(3, "Mario Bros", 5, 8, "mario.jpg"));
+            cine.getSalas().add(new Sala(4, "Spider-Man: No Way Home", 5, 8, "spiderman.jpg"));
+            cine.getSalas().add(new Sala(5, "Oppenheimer", 6, 10, "oppenheimer.jpg"));
+            cine.getSalas().add(new Sala(6, "Barbie", 6, 10, "barbie.jpg"));
+            cine.getSalas().add(new Sala(10, "Interestelar", 5, 8, "interestelar.jpg"));
+            cine.getSalas().add(new Sala(11, "El Señor de los Anillos", 6, 10, "lotr.jpg"));
+            cine.getSalas().add(new Sala(15, "Wonka", 5, 8, "wonka.jpg"));
 
             PersistenciaDatos.guardar(cine);
         }
